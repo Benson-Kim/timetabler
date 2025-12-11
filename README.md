@@ -1,4 +1,4 @@
-![architecture_diagram](https://github.com/user-attachments/assets/e2cbc630-4670-4459-8190-fd868121761e)# Academic Timetable Generation System
+# Academic Timetable Generation System
 
 ## Problem Statement
 
