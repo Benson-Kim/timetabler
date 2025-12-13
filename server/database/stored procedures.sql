@@ -7,9 +7,9 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_add_class`(IN p_lecturer_staffno INT, IN p_subject_code CHAR(10), IN p_room_num CHAR(10), IN p_batch_code CHAR(10), IN p_start_time TIME, IN p_end_time TIME, IN p_day_of_week CHAR(10))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_add_class`(IN p_lecturer_staffno INT, IN p_course_id INT, IN p_subject_code CHAR(10), IN p_room_num CHAR(10), IN p_batch_code CHAR(10), IN p_start_time TIME, IN p_end_time TIME, IN p_day_of_week CHAR(10))
 BEGIN
-  INSERT INTO class (lecturer_staffno, subject_code, room_num, batch_code, start_time, end_time, day_of_week) VALUES (p_lecturer_staffno, p_course_id, p_subject_code, p_room_num, p_batch_code, p_start_time, p_end_time, p_day_of_week);
+  INSERT INTO class (lecturer_staffno, course_id, subject_code, room_num, batch_code, start_time, end_time, day_of_week) VALUES (p_lecturer_staffno, p_course_id, p_subject_code, p_room_num, p_batch_code, p_start_time, p_end_time, p_day_of_week);
 END$$
 DELIMITER ;
 
@@ -54,27 +54,6 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_add_subject`(IN p_subject_code CHAR(10), IN p_subject_name VARCHAR(35), IN p_has_lab BOOLEAN, IN p_course_id INT)
 BEGIN
   INSERT INTO subject (subject_code, subject_name, has_lab, course_id) VALUES (p_subject_code, p_subject_name, p_has_lab, p_course_id);
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_batch_schedule`(IN batch_code CHAR(10))
-BEGIN
-    SELECT
-        day_of_week,
-        start_time,
-        end_time,
-        room.room_num,
-        CASE
-            WHEN TIMESTAMPDIFF(HOUR, start_time, end_time) = 3 THEN CONCAT(subject_name, ' (lab)')
-            ELSE subject_name
-        END AS subject_name
-    FROM class
-    INNER JOIN room ON class.room_num = room.room_num
-    INNER JOIN course ON class.course_id = course.course_id
-    INNER JOIN subject ON class.subject_code = subject.subject_code
-    WHERE class.batch_code = batch_code
-    ORDER BY day_of_week ASC, start_time;
 END$$
 DELIMITER ;
 
@@ -124,41 +103,6 @@ DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_delete_subject`(IN subjectId INT)
 BEGIN
   DELETE FROM subject WHERE subject_ID = subjectId;
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_department_schedule`(IN Usr_dpt_name VARCHAR(35))
-BEGIN
-    DECLARE new_department_id INT;
-    
-    -- Get the department_id for the provided department_name
-    SELECT department_id INTO new_department_id
-    FROM department
-    WHERE department_name = Usr_dpt_name
-    LIMIT 1;
-    
-    IF new_department_id IS NOT NULL THEN
-        SELECT
-            day_of_week,
-            start_time,
-            end_time,
-            room.room_name,
-            lecturer.first_name,
-            lecturer.last_name,
-            course.course_name,
-            subject.subject_name
-        FROM class
-        INNER JOIN room ON class.room_num = room.room_num
-        INNER JOIN lecturer ON class.lecturer_id = lecturer.lecturer_id
-        INNER JOIN course ON class.course_id = course.course_id
-        INNER JOIN subject ON class.subject_code = subject.subject_code
-        WHERE course.department_id = new_department_id
-        ORDER BY day_of_week, start_time;
-    ELSE
-        -- Handle the case when the department is not found
-        SELECT 'Department not found' AS Error;
-    END IF;
 END$$
 DELIMITER ;
 
@@ -342,7 +286,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getdepartment_byid`(IN dept_id INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_department_byid`(IN dept_id INT)
 BEGIN
 	SELECT department_name FROM department WHERE department_id = dept_id;
 
@@ -350,7 +294,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_lecturer_schedule`(IN lecturer_id INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_lecturer_schedule`(IN lecturer_id INT)
 BEGIN
     SELECT
         day_of_week,
@@ -372,7 +316,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_room_schedule`(IN room_num CHAR(10))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_room_schedule`(IN room_num CHAR(10))
 BEGIN
     SELECT
         day_of_week,
@@ -391,6 +335,62 @@ BEGIN
     INNER JOIN Subject ON class.subject_code = subject.subject_code
     WHERE class.room_num = room_num
     ORDER BY day_of_week, start_time;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_department_schedule`(IN Usr_dpt_name VARCHAR(35))
+BEGIN
+    DECLARE new_department_id INT;
+    
+    -- Get the department_id for the provided department_name
+    SELECT department_id INTO new_department_id
+    FROM department
+    WHERE department_name = Usr_dpt_name
+    LIMIT 1;
+    
+    IF new_department_id IS NOT NULL THEN
+        SELECT
+            day_of_week,
+            start_time,
+            end_time,
+            room.room_name,
+            lecturer.first_name,
+            lecturer.last_name,
+            course.course_name,
+            subject.subject_name
+        FROM class
+        INNER JOIN room ON class.room_num = room.room_num
+        INNER JOIN lecturer ON class.lecturer_id = lecturer.lecturer_id
+        INNER JOIN course ON class.course_id = course.course_id
+        INNER JOIN subject ON class.subject_code = subject.subject_code
+        WHERE course.department_id = new_department_id
+        ORDER BY day_of_week, start_time;
+    ELSE
+        -- Handle the case when the department is not found
+        SELECT 'Department not found' AS Error;
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_batch_schedule`(IN batch_code CHAR(10))
+BEGIN
+    SELECT
+        day_of_week,
+        start_time,
+        end_time,
+        room.room_num,
+        CASE
+            WHEN TIMESTAMPDIFF(HOUR, start_time, end_time) = 3 THEN CONCAT(subject_name, ' (lab)')
+            ELSE subject_name
+        END AS subject_name
+    FROM class
+    INNER JOIN room ON class.room_num = room.room_num
+    INNER JOIN course ON class.course_id = course.course_id
+    INNER JOIN subject ON class.subject_code = subject.subject_code
+    WHERE class.batch_code = batch_code
+    ORDER BY day_of_week ASC, start_time;
 END$$
 DELIMITER ;
 
@@ -450,6 +450,7 @@ BEGIN
     PREPARE stmt FROM @s;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
+      
 END$$
 DELIMITER ;
 
@@ -462,4 +463,34 @@ BEGIN
     FROM lecturer
     WHERE staff_no = p_staff;
 END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_all_users`()
+BEGIN
+  SELECT * FROM users;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  DEFINER=`root`@`localhost` PROCEDURE `sp_authenticate_user` (IN p_username VARCHAR(255), IN p_password VARCHAR(255))
+BEGIN
+    DECLARE user_count INT;
+    
+    -- Check if the user with the provided credentials exists
+    SELECT COUNT(*) INTO user_count
+    FROM users
+    WHERE username = p_username AND password = p_password;
+    
+    -- Return the user if found
+    IF user_count > 0 THEN
+        SELECT *
+        FROM users
+        WHERE username = p_username AND password = p_password;
+    ELSE
+        SELECT NULL AS username, NULL AS role; -- Return null if user not found
+    END IF;
+END$$
+
 DELIMITER ;
