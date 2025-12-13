@@ -18,27 +18,27 @@ INSERT INTO course (course_name, department_id) VALUES
 ('Bachelor of Science in Mathematics',5),
 ('Bachelor of Science in Chemistry', 6);
 
-INSERT INTO lecturer (staff_no, first_name, last_name, user_name, password, phone_number, email_address, department_id, preferred_days) VALUES
-('DS-L001', 'John', 'Mwangi', 'john.mwangi', 'password123', '+254712345678', 'john.mwangi@yahoo.com', 1, 'Monday, Wednesday, Friday'),
-('DS-L002', 'Abdul', 'Rahman', 'abdul.rahman', 'password123', '+971123456789', 'abdul.rahman@dkut.ac.ke', 6, 'Monday, Thursday'),
-('DS-L003', 'Peter', 'Wachira', 'peter.wachira', 'password123', '+254734567890', 'peter.wachira@gmail.com', 3, 'Monday, Wednesday'),
-('DS-L004', 'Linda', 'Odhiambo', 'linda.odhiambo', 'password123', '+254745678901', 'linda.odhiambo@hotmail.com', 4, 'Tuesday, Thursday'),
-('DS-L005', 'Olga', 'Ivanova', 'olga.ivanova', 'password123', '+74991234567', 'olga.ivanova@hotmail.com', 5, 'Wednesday, Friday'),
-('DS-L006', 'Faith', 'Omondi', 'faith.omondi', 'password123', '+254767890123', 'faith.omondi@academia.com', 6, 'Monday, Thursday'),
-('DS-L007', 'Brian', 'Musyoka', 'brian.musyoka', 'password123', '+254778901234', 'brian.musyoka@ameritech.ke', 7, 'Tuesday, Friday'),
-('DS-L008', 'Mikhail', 'Sokolov', 'mikhail.sokolov', 'password123', '+74957654321', 'mikhail.sokolov@yahoo.com', 9, 'Tuesday, Thursday'),
-('DS-L009', 'Charles', 'Owiti', 'charles.owiti', 'password123', '+254790123456', 'charles.owiti@googlemail.com', 9, 'Tuesday, Thursday'),
-('DS-L010', 'Amina', 'Ali', 'amina.ali', 'password123', '+254701234567', 'amina.ali@hotmail.com', 10, 'Wednesday, Friday'),
-('DS-L011', 'Michael', 'Andersen', 'michael.andersen', 'password123', '+4523456789', 'michael.andersen@yahoo.com', 1, 'Monday, Wednesday, Friday'),
-('DS-L012', 'Sophie', 'Martinez', 'sophie.martinez', 'password123', '+34612345678', 'sophie.martinez@ameritech.ke', 2, 'Tuesday, Thursday'),
-('DS-L013', 'Grace', 'Kimani', 'grace.kimani', 'password123', '+254723456789', 'grace.kimani@googlemail.com', 2, 'Tuesday, Thursday'),
-('DS-L014', 'Chen', 'Li', 'chen.li', 'password123', '+861234567890', 'chen.li@academia.com', 3, 'Monday, Wednesday'),
-('DS-L015', 'Juan', 'Rodriguez', 'juan.rodriguez', 'password123', '+529876543210', 'juan.rodriguez@dkut.ac.ke', 4, 'Tuesday, Thursday'),
-('DS-L016', 'David', 'Kiptoo', 'david.kiptoo', 'password123', '+254756789012', 'david.kiptoo@dkut.ac.ke', 5, 'Wednesday, Friday'),
-('DS-L017', 'Yuki', 'Tanaka', 'yuki.tanaka', 'password123', '+819012345678', 'yuki.tanaka@ameritech.ke', 7, 'Tuesday, Friday'),
-('DS-L018', 'Elena', 'Petrova', 'elena.petrova', 'password123', '+74951234567', 'elena.petrova@googlemail.com', 8, 'Monday, Wednesday, Friday'),
-('DS-L019', 'Sandra', 'Nyambura', 'sandra.nyambura', 'password123', '+254789012345', 'sandra.nyambura@yahoo.com', 8, 'Monday, Wednesday, Friday'),
-('DS-L020', 'Aya', 'Kawasaki', 'aya.kawasaki', 'password123', '+81345678901', 'aya.kawasaki@gmail.com', 10, 'Wednesday, Friday');
+INSERT INTO lecturer (staff_no, first_name, last_name, user_name, password, department_id, preferred_days) VALUES
+('DS-L001', 'John', 'Mwangi', 'john.mwangi', 'password123', 1, 'Monday, Wednesday, Friday'),
+('DS-L002', 'Abdul', 'Rahman', 'abdul.rahman', 'password123', 6, 'Monday, Thursday'),
+('DS-L003', 'Peter', 'Wachira', 'peter.wachira', 'password123', 3, 'Monday, Wednesday'),
+('DS-L004', 'Linda', 'Odhiambo', 'linda.odhiambo', 'password123', 4, 'Tuesday, Thursday'),
+('DS-L005', 'Olga', 'Ivanova', 'olga.ivanova', 'password123', 5, 'Wednesday, Friday'),
+('DS-L006', 'Faith', 'Omondi', 'faith.omondi', 'password123', 6, 'Monday, Thursday'),
+('DS-L007', 'Brian', 'Musyoka', 'brian.musyoka', 'password123', 2, 'Tuesday, Friday'),
+('DS-L008', 'Mikhail', 'Sokolov', 'mikhail.sokolov', 'password123', 3, 'Tuesday, Thursday'),
+('DS-L009', 'Charles', 'Owiti', 'charles.owiti', 'password123', 3, 'Tuesday, Thursday'),
+('DS-L010', 'Amina', 'Ali', 'amina.ali', 'password123', 5, 'Wednesday, Friday'),
+('DS-L011', 'Michael', 'Andersen', 'michael.andersen', 'password123', 1, 'Monday, Wednesday, Friday'),
+('DS-L012', 'Sophie', 'Martinez', 'sophie.martinez', 'password123', 2, 'Tuesday, Thursday'),
+('DS-L013', 'Grace', 'Kimani', 'grace.kimani', 'password123', 2, 'Tuesday, Thursday'),
+('DS-L014', 'Chen', 'Li', 'chen.li', 'password123', 3, 'Monday, Wednesday'),
+('DS-L015', 'Juan', 'Rodriguez', 'juan.rodriguez', 'password123', 4, 'Tuesday, Thursday'),
+('DS-L016', 'David', 'Kiptoo', 'david.kiptoo', 'password123', 5, 'Wednesday, Friday'),
+('DS-L017', 'Yuki', 'Tanaka', 'yuki.tanaka', 'password123', 2, 'Tuesday, Friday'),
+('DS-L018', 'Elena', 'Petrova', 'elena.petrova', 'password123', 4, 'Monday, Wednesday, Friday'),
+('DS-L019', 'Sandra', 'Nyambura', 'sandra.nyambura', 'password123', 4, 'Monday, Wednesday, Friday'),
+('DS-L020', 'Aya', 'Kawasaki', 'aya.kawasaki', 'password123', 5, 'Wednesday, Friday');
 
 
 INSERT INTO room (room_num, room_name, room_type, room_capacity) VALUES
