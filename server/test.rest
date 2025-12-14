@@ -1,26 +1,27 @@
-GET http://localhost:3005/dept/lectures
+@baseUrl = http://localhost:3005
+
+GET {{baseUrl}}/dept/lectures
 
 ###
-GET http://localhost:3005/cls/classes
+GET {{baseUrl}}/cls/classes
 
 ###
-GET http://localhost:3005/cls/generate
+GET {{baseUrl}}/cls/generate
 
 ###
-GET http://localhost:3005/bat/batchsubjects/?course_id=1
+GET {{baseUrl}}/bat/batchsubjects/?course_id=1
 
 ###
-DELETE http://localhost:3005/dept/delete-department/?departmentId=14
+DELETE {{baseUrl}}/dept/delete-department/?departmentId=14
 
 ###
-GET http://localhost:3005/dept/departments
+GET {{baseUrl}}/dept/departments
 
 ###
-GET http://localhost:3005/dept/get-department/?departmentId=3
-
+GET {{baseUrl}}/dept/get-department/?departmentId=3
 
 ###
-POST http://localhost:3005/sub/subjects
+POST {{baseUrl}}/sub/subjects
 Content-Type: application/json
 
 {
@@ -28,9 +29,8 @@ Content-Type: application/json
   "course_name":"BSC EEE"
 }
 
-
 ###
-PUT http://localhost:3005/dept/update-department/?departmentId=12
+PUT {{baseUrl}}/dept/update-department/?departmentId=12
 Content-Type: application/json
 
 {
@@ -39,11 +39,22 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3005/user/login
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-"user_name":"IT-00",
-"password":"123"
+"username":"admin1",
+"password":"admin1_password"
+}
 
+###
+POST {{baseUrl}}/auth/create-account
+Content-Type: application/json
+
+{
+  "institution_id": 1,
+  "username": "admin1",
+  "email": "admin1@school.com",
+  "password": "admin1_password",
+  "user_type": "Admin"
 }

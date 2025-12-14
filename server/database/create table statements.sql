@@ -1,4 +1,5 @@
 -- Drop existing tables if they exist
+DROP TABLE IF EXISTS `user_account`;
 DROP TABLE IF EXISTS `batch_subject`;
 DROP TABLE IF EXISTS `room`;
 DROP TABLE IF EXISTS `lecturer`;
@@ -111,3 +112,30 @@ CREATE TABLE batch_subject (
   CONSTRAINT `subject_batch_ibfk_1` FOREIGN KEY (`batch_id`) REFERENCES `batch` (`batch_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `subject_batch_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`subject_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+
+
+CREATE TABLE `user_account` (
+  `user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `institution_id` INT UNSIGNED NOT NULL,
+  `username` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
+  `password_hash` VARCHAR(255) NOT NULL,
+  `user_type` ENUM('Admin', 'Scheduler', 'Lecturer', 'Student', 'Staff') NOT NULL,
+  `linked_entity_type` ENUM('Lecturer', 'Student', 'Staff') DEFAULT NULL,
+  `linked_entity_id` INT UNSIGNED DEFAULT NULL,
+  `is_active` BOOLEAN DEFAULT TRUE,
+  `last_login` TIMESTAMP NULL,
+  `password_changed_at` TIMESTAMP NULL,
+  `must_change_password` BOOLEAN DEFAULT TRUE,
+  `failed_login_attempts` TINYINT UNSIGNED DEFAULT 0,
+  `locked_until` TIMESTAMP NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `uk_user_username` (`institution_id`, `username`),
+  UNIQUE KEY `uk_user_email` (`institution_id`, `email`),
+  INDEX `idx_user_type` (`user_type`),
+  INDEX `idx_user_active` (`is_active`),
+  INDEX `idx_user_entity` (`linked_entity_type`, `linked_entity_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

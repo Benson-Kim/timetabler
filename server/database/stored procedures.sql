@@ -465,11 +465,56 @@ BEGIN
 END$$
 DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE `sp_get_all_users`(IN p_institution_id INT UNSIGNED)
+BEGIN
+    SELECT 
+        user_id,
+        institution_id,
+        username,
+        email,
+        user_type,
+        linked_entity_type,
+        linked_entity_id,
+        is_active,
+        last_login,
+        created_at,
+        updated_at
+    FROM user_account
+    WHERE institution_id = p_institution_id
+    AND is_active = TRUE;
+END$$
+DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_all_users`()
+CREATE PROCEDURE `sp_get_user_for_auth`(
+    IN p_institution_id INT UNSIGNED,
+    IN p_username VARCHAR(50)
+)
 BEGIN
-  SELECT * FROM users;
+    DECLARE v_user_id INT UNSIGNED;
+    
+    SELECT user_id INTO v_user_id
+    FROM user_account
+    WHERE institution_id = p_institution_id
+    AND username = p_username
+    AND is_active = TRUE
+    AND (locked_until IS NULL OR locked_until < NOW());
+    
+    IF v_user_id IS NOT NULL THEN
+        SELECT 
+            user_id,
+            username,
+            email,
+            password_hash,
+            user_type,
+            must_change_password,
+            failed_login_attempts
+        FROM user_account
+        WHERE user_id = v_user_id;
+    ELSE
+        SELECT NULL AS user_id;
+    END IF;
 END$$
 DELIMITER ;
 
@@ -494,3 +539,89 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE `sp_update_login_success`(
+    IN p_user_id INT UNSIGNED
+)
+BEGIN
+    UPDATE user_account
+    SET 
+        last_login = NOW(),
+        failed_login_attempts = 0,
+        locked_until = NULL
+    WHERE user_id = p_user_id;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE `sp_update_login_failure`(
+    IN p_user_id INT UNSIGNED,
+    IN p_max_attempts TINYINT UNSIGNED,
+    IN p_lockout_minutes INT
+)
+BEGIN
+    UPDATE user_account
+    SET 
+        failed_login_attempts = failed_login_attempts + 1,
+        locked_until = CASE 
+            WHEN failed_login_attempts + 1 >= p_max_attempts 
+            THEN DATE_ADD(NOW(), INTERVAL p_lockout_minutes MINUTE)
+            ELSE NULL
+        END
+    WHERE user_id = p_user_id;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE PROCEDURE `sp_change_password`(
+    IN p_user_id INT UNSIGNED,
+    IN p_new_password_hash VARCHAR(255)
+)
+BEGIN
+    UPDATE user_account
+    SET 
+        password_hash = p_new_password_hash,
+        password_changed_at = NOW(),
+        must_change_password = FALSE
+    WHERE user_id = p_user_id;
+    
+    SELECT ROW_COUNT() AS affected_rows;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE PROCEDURE `sp_create_user`(
+    IN p_institution_id INT UNSIGNED,
+    IN p_username VARCHAR(50),
+    IN p_email VARCHAR(100),
+    IN p_password_hash VARCHAR(255),
+    IN p_user_type ENUM('Admin', 'Scheduler', 'Lecturer', 'Student', 'Staff')
+)
+BEGIN
+    INSERT INTO user_account (
+        institution_id,
+        username,
+        email,
+        password_hash,
+        user_type,
+        is_active,
+        must_change_password
+    ) VALUES (
+        p_institution_id,
+        p_username,
+        p_email,
+        p_password_hash,
+        p_user_type,
+        TRUE,
+        TRUE
+    );
+    
+    SELECT LAST_INSERT_ID() AS user_id;
+END$$
+DELIMITER ;
+
+DELIMITER $$

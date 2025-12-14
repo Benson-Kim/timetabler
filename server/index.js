@@ -9,9 +9,10 @@ const sub_router = require("./routes/subjectRoutes");
 const rm_router = require("./routes/roomRoutes");
 const sch_router = require("./routes/scheduleRoutes");
 const cls_router = require("./routes/trialRoutes");
-const user_router = require("./routes/userRoutes");
+const auth = require("./routes/auth.routes");
 
 const cors = require("cors");
+const helmet = require("helmet");
 
 const app = express();
 
@@ -19,6 +20,7 @@ const port = process.env.PORT || 3016;
 // sessions
 
 app.use(express.json());
+app.use(helmet())
 app.use(
 	cors({
 		origin: "http://localhost:3000",
@@ -34,7 +36,7 @@ app.use("/sub", sub_router);
 app.use("/rm", rm_router);
 app.use("/sch", sch_router);
 app.use("/cls", cls_router);
-app.use("/user", user_router);
+app.use("/auth", auth);
 
 app.use((req, res, next) => {
 	const error = new Error("Not found");
