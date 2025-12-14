@@ -113,6 +113,21 @@ CREATE TABLE batch_subject (
   CONSTRAINT `subject_batch_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`subject_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE `institution` (
+  `institution_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `institution_code` VARCHAR(20) NOT NULL,
+  `institution_name` VARCHAR(200) NOT NULL,
+  `institution_type` ENUM('Primary', 'Secondary', 'College', 'University', 'Technical', 'Other') NOT NULL,
+  `address` TEXT,
+  `phone` VARCHAR(20),
+  `email` VARCHAR(100),
+  `is_active` BOOLEAN DEFAULT TRUE,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`institution_id`),
+  UNIQUE KEY `uk_institution_code` (`institution_code`),
+  INDEX `idx_institution_active` (`is_active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `user_account` (
@@ -137,5 +152,8 @@ CREATE TABLE `user_account` (
   UNIQUE KEY `uk_user_email` (`institution_id`, `email`),
   INDEX `idx_user_type` (`user_type`),
   INDEX `idx_user_active` (`is_active`),
-  INDEX `idx_user_entity` (`linked_entity_type`, `linked_entity_id`)
+  INDEX `idx_user_entity` (`linked_entity_type`, `linked_entity_id`), 
+  CONSTRAINT `fk_user_institution` 
+    FOREIGN KEY (`institution_id`) REFERENCES `institution` (`institution_id`)
+    ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

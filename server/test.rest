@@ -58,3 +58,28 @@ Content-Type: application/json
   "password": "admin1_password",
   "user_type": "Admin"
 }
+
+@onboarding = {{baseUrl}}/onboarding
+
+### Get institution types
+GET {{onboarding}}/institution-types
+
+### Check institution code availability
+GET {{onboarding}}/check-code/UNI
+
+### Create institution + admin
+POST {{onboarding}}/register
+Content-Type: application/json
+
+{
+  "institution_code": "ABC",
+  "institution_name": "ABC Technical Institute",
+  "institution_type": "Technical",
+  "address": "Nairobi, Kenya",
+  "phone": "+254700000000",
+  "email": "info@abc.ac.ke",
+
+  "admin_username": "superadmin",
+  "admin_email": "admin@abc.ac.ke",
+  "admin_password": "StrongPass123"
+}

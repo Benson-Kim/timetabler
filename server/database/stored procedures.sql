@@ -625,3 +625,75 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+
+CREATE PROCEDURE `sp_create_institution_with_admin`(
+    IN p_institution_code VARCHAR(20),
+    IN p_institution_name VARCHAR(200),
+    IN p_institution_type ENUM('Primary', 'Secondary', 'College', 'University', 'Technical', 'Other'),
+    IN p_address TEXT,
+    IN p_phone VARCHAR(20),
+    IN p_email VARCHAR(100),
+    IN p_admin_username VARCHAR(50),
+    IN p_admin_email VARCHAR(100),
+    IN p_admin_password_hash VARCHAR(255),
+    OUT p_institution_id INT UNSIGNED,
+    OUT p_admin_user_id INT UNSIGNED
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    START TRANSACTION;
+
+    -- Create institution
+    INSERT INTO institution (
+        institution_code,
+        institution_name,
+        institution_type,
+        address,
+        phone,
+        email,
+        is_active
+    ) VALUES (
+        p_institution_code,
+        p_institution_name,
+        p_institution_type,
+        p_address,
+        p_phone,
+        p_email,
+        TRUE
+    );
+
+    SET p_institution_id = LAST_INSERT_ID();
+
+    -- Create admin user
+    INSERT INTO user_account (
+        institution_id,
+        username,
+        email,
+        password_hash,
+        user_type,
+        is_active,
+        must_change_password
+    ) VALUES (
+        p_institution_id,
+        p_admin_username,
+        p_admin_email,
+        p_admin_password_hash,
+        'Admin',
+        TRUE,
+        FALSE
+    );
+
+    SET p_admin_user_id = LAST_INSERT_ID();
+
+    COMMIT;
+
+    -- Return results
+    SELECT p_institution_id AS institution_id, p_admin_user_id AS admin_user_id;
+END$$
+
+DELIMITER ;

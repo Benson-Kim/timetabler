@@ -10,6 +10,7 @@ const rm_router = require("./routes/roomRoutes");
 const sch_router = require("./routes/scheduleRoutes");
 const cls_router = require("./routes/trialRoutes");
 const auth = require("./routes/auth.routes");
+const onboarding = require("./routes/onboarding.routes");
 
 const cors = require("cors");
 const helmet = require("helmet");
@@ -37,6 +38,7 @@ app.use("/rm", rm_router);
 app.use("/sch", sch_router);
 app.use("/cls", cls_router);
 app.use("/auth", auth);
+app.use("/onboarding", onboarding);
 
 app.use((req, res, next) => {
 	const error = new Error("Not found");
